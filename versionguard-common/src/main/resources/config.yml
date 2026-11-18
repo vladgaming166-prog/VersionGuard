@@ -1,0 +1,38 @@
+# VersionGuard configuration
+# Official Minecraft Java Edition releases only. Snapshots, pre-releases,
+# release candidates, experimental builds, and unknown protocols are blocked
+# by default.
+
+settings:
+  minimum-version: "1.21"
+  maximum-version: "26.3"
+
+  block-snapshots: true
+  block-experimental: true
+  block-unknown-protocols: true
+
+  debug: false
+
+messages:
+  kick:
+    - "<red><bold>VersionGuard</bold></red>"
+    - ""
+    - "<gray>Your Minecraft version is not supported.</gray>"
+    - ""
+    - "<white>Minimum version: <green>1.21</green></white>"
+    - "<white>Maximum version: <green>26.3</green></white>"
+    - ""
+    - "<gray>Your version: <red>%client_version%</red></gray>"
+    - ""
+    - "<yellow>Please update your Minecraft client.</yellow>"
+
+  command:
+    no-permission: "<red>You do not have permission to use VersionGuard commands.</red>"
+    reload-success: "<green>VersionGuard configuration reloaded.</green>"
+    reload-failed: "<red>VersionGuard configuration reload failed. The previous configuration is still active.</red>"
+    player-not-found: "<red>Player <white>%player%</white> is not online.</red>"
+    usage: "<gray>Usage:</gray> <white>/versionguard reload</white><gray>,</gray> <white>/versionguard info</white><gray>, or</gray> <white>/versionguard check PLAYER</white>"
+
+permissions:
+  bypass: "versionguard.bypass"
+  admin: "versionguard.admin"
