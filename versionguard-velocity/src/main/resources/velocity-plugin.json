@@ -1,0 +1,14 @@
+{
+  "id": "versionguard",
+  "name": "VersionGuard",
+  "version": "${project.version}",
+  "description": "Restricts Minecraft Java Edition client versions to official releases.",
+  "authors": ["VersionGuard"],
+  "main": "com.versionguard.velocity.VersionGuardVelocityPlugin",
+  "dependencies": [
+    {
+      "id": "viaversion",
+      "optional": true
+    }
+  ]
+}
