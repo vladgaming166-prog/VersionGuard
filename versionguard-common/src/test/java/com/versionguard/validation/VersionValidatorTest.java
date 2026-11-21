@@ -87,6 +87,16 @@ class VersionValidatorTest {
     }
 
     @Test
+    void allowsOfficialClientsWhenSnapshotAndExperimentalFlagsAreEnabled() {
+        ClientVersion poisonedByUnknownVia = ClientVersionFactory.fromNativeProtocol(
+                767,
+                ViaVersionFacts.of(false, true, true, -1, "UNKNOWN")
+        );
+        assertAllowed(validator.validate(poisonedByUnknownVia, defaults, false));
+        assertAllowed(validator.validate(ClientVersion.ofProtocol(777), defaults, false));
+    }
+
+    @Test
     void neverAllowsUnknownProtocolsInsideTheNumericRange() {
         // 767-777 are all assigned official releases; a non-catalog protocol still fails closed.
         ClientVersion unknownInRange = new ClientVersion(

@@ -142,8 +142,11 @@ public final class YamlConfigLoader {
             return bool;
         }
         if (value instanceof String text) {
-            if (text.equalsIgnoreCase("true") || text.equalsIgnoreCase("false")) {
-                return Boolean.parseBoolean(text);
+            if (text.equalsIgnoreCase("true") || text.equalsIgnoreCase("yes") || text.equalsIgnoreCase("on")) {
+                return true;
+            }
+            if (text.equalsIgnoreCase("false") || text.equalsIgnoreCase("no") || text.equalsIgnoreCase("off")) {
+                return false;
             }
         }
         return fallback;

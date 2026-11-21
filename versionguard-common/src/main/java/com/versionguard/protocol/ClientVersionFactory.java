@@ -31,11 +31,20 @@ public final class ClientVersionFactory {
     }
 
     public static ClientVersion fromDetected(int protocol, ViaVersionFacts via) {
-        boolean snapshot = ProtocolBits.isSnapshotProtocol(protocol) || via.snapshot();
-        boolean experimental = via.experimental();
-        Optional<OfficialProtocol> official = snapshot
+        Optional<OfficialProtocol> official = ProtocolBits.isSnapshotProtocol(protocol)
                 ? Optional.empty()
                 : OfficialProtocolCatalog.findByProtocol(protocol);
+
+        // Native handshake is the source of truth for official releases. ViaVersion's
+        // ProtocolVersion.unknown is VersionType.SPECIAL, and some ViaVersion builds
+        // mark release objects as snapshots because they store a mapped snapshot id.
+        // Those flags must not reject a known official handshake protocol.
+        boolean snapshot = ProtocolBits.isSnapshotProtocol(protocol)
+                || (official.isEmpty() && via.known() && viaReportsSnapshotProtocol(via));
+        boolean experimental = official.isEmpty() && via.known() && via.experimental();
+        if (snapshot) {
+            official = Optional.empty();
+        }
 
         String displayName = resolveDisplayName(protocol, snapshot, experimental, official, via);
         boolean unknown = !snapshot && !experimental && official.isEmpty();
@@ -83,5 +92,9 @@ public final class ClientVersionFactory {
             return parsedFromVia.toCanonicalString();
         }
         return "Unknown (" + protocol + ")";
+    }
+
+    private static boolean viaReportsSnapshotProtocol(ViaVersionFacts via) {
+        return via.protocol().isPresent() && ProtocolBits.isSnapshotProtocol(via.protocol().getAsInt());
     }
 }

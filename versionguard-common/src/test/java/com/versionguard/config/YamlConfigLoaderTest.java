@@ -29,6 +29,22 @@ class YamlConfigLoaderTest {
     }
 
     @Test
+    void acceptsYamlOffOnAliases() {
+        String yaml = """
+                settings:
+                  minimum-version: "1.21"
+                  maximum-version: "26.3"
+                  block-snapshots: off
+                  block-experimental: off
+                  block-unknown-protocols: on
+                """;
+        VersionGuardConfig config = loader.load(new StringReader(yaml));
+        assertFalse(config.blockSnapshots());
+        assertFalse(config.blockExperimental());
+        assertTrue(config.blockUnknownProtocols());
+    }
+
+    @Test
     void rejectsUnknownConfiguredVersions() {
         String yaml = """
                 settings:

@@ -37,4 +37,26 @@ class ClientVersionFactoryTest {
         assertEquals("1.21-1.21.1", version.displayName());
         assertEquals(767, version.protocol().orElseThrow());
     }
+
+    @Test
+    void unknownViaVersionSpecialTypeDoesNotMarkOfficialClientsExperimental() {
+        ClientVersion version = ClientVersionFactory.fromNativeProtocol(
+                777,
+                ViaVersionFacts.of(false, false, true, -1, "UNKNOWN")
+        );
+        assertFalse(version.experimental());
+        assertFalse(version.snapshot());
+        assertTrue(version.isOfficialRelease());
+        assertEquals(777, version.protocol().orElseThrow());
+    }
+
+    @Test
+    void viaSnapshotFlagOnMappedReleaseDoesNotOverrideOfficialHandshake() {
+        ClientVersion version = ClientVersionFactory.fromNativeProtocol(
+                775,
+                ViaVersionFacts.of(true, true, false, 775, "26.1")
+        );
+        assertFalse(version.snapshot());
+        assertTrue(version.isOfficialRelease());
+    }
 }

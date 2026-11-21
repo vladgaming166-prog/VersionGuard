@@ -1,6 +1,7 @@
 package com.versionguard.paper.via;
 
 import com.versionguard.detect.ViaVersionProbe;
+import com.versionguard.protocol.ProtocolBits;
 import com.versionguard.protocol.ViaVersionFacts;
 import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.ViaAPI;
@@ -31,14 +32,14 @@ final class PaperViaVersionAccess implements ViaVersionProbe {
                 return ViaVersionFacts.unavailable();
             }
             ProtocolVersion protocolVersion = resolve(api, uniqueId, platformPlayer);
-            if (protocolVersion == null) {
+            if (protocolVersion == null || protocolVersion == ProtocolVersion.unknown || !protocolVersion.isKnown()) {
                 return ViaVersionFacts.unavailable();
             }
-            boolean known = protocolVersion.isKnown() && protocolVersion != ProtocolVersion.unknown;
-            boolean snapshot = protocolVersion.isSnapshot();
+            int protocol = protocolVersion.getVersion();
+            boolean snapshot = protocolVersion.isSnapshot() && ProtocolBits.isSnapshotProtocol(protocolVersion.getOriginalVersion())
+                    && ProtocolBits.isSnapshotProtocol(protocol);
             boolean experimental = protocolVersion.getVersionType() == VersionType.SPECIAL;
-            int protocol = protocolVersion.getOriginalVersion();
-            return ViaVersionFacts.of(known, snapshot, experimental, protocol, protocolVersion.getName());
+            return ViaVersionFacts.of(true, snapshot, experimental, protocol, protocolVersion.getName());
         } catch (NoSuchMethodError | NoClassDefFoundError compatibility) {
             return fallbackLegacy(uniqueId, platformPlayer);
         } catch (Throwable throwable) {
