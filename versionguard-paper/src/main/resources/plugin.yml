@@ -1,0 +1,30 @@
+name: VersionGuard
+version: ${project.version}
+main: com.versionguard.paper.VersionGuardPaperPlugin
+description: Restricts Minecraft Java Edition client versions to official releases.
+author: VersionGuard
+website: https://github.com/versionguard/VersionGuard
+api-version: "1.21"
+load: STARTUP
+folia-supported: false
+softdepend:
+  - ViaVersion
+commands:
+  versionguard:
+    description: VersionGuard administration commands
+    usage: /versionguard <reload|info|check>
+    aliases: [vg]
+    permission: versionguard.admin
+permissions:
+  versionguard.admin:
+    description: Allows use of VersionGuard administration commands
+    default: op
+  versionguard.bypass:
+    description: Allows joining with an otherwise unsupported Minecraft version
+    default: false
+  versionguard.*:
+    description: Grants every VersionGuard permission
+    default: false
+    children:
+      versionguard.admin: true
+      versionguard.bypass: true
